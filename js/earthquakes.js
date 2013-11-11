@@ -90,32 +90,28 @@ function addQuakeMarkers(quakes, map) {
 			});
 
 
-			google.maps.event.addListener(quake.mapMarker, 'click', function(){
+			infoWindow = new google.maps.InfoWindow({
+			    content: new Date(quake.datetime).toLocaleString() + 
+			                ': magnitude ' + quake.magnitude + ' at depth of ' + 
+			                quake.depth + ' meters'
+			});
 
-				if (gov.usgs.iw) { 
-					gov.usgs.iw.close();
-				}
-			//code that runs when user clicks on a marker
-			//create an info window with the quake info
-				gov.usgs.iw = new google.maps.InfoWindow({
-					content: new Date(quake.datetime).toLocaleString() + 
-			    		': magnitude ' + quake.magnitude + ' at depth of ' + 
-			    		quake.depth + ' meters'
-				});
-
-				//open the info window
-				gov.usgs.iw.open(map, this);
-			}); //click handler for marker 
-
+			registerInfoWindow(map, quake.mapMarker, infoWindow); 
         }
-        //latitude of current quake = quake.location.latitude 
-        //longitutde of current quake = quake.location.longitude
-
-
-		
-
-
-    }
-    
+    }   
 } //addQuakeMarkers()
+
+
+
+function registerInfoWindow(map, marker, infoWindow) {
+    google.maps.event.addListener(marker, 'click', function(){
+
+    	if (gov.usgs.iw) { 
+			gov.usgs.iw.close();
+		}
+
+        gov.usgs.iw = infoWindow;
+        infoWindow.open(map, marker);
+    });                
+} //registerInfoWindow()
 
